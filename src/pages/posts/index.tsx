@@ -2,6 +2,8 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import styles from './styles.module.scss';
 
+import { useState } from 'react';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import thumbImg from '../../../public/images/thumb.png'
@@ -22,8 +24,10 @@ interface PostProps {
 	posts: Post[];
 }
 
-export default function Posts({ posts }: PostProps) {
-	console.log("posts", posts);
+export default function Posts({ posts: postsBlog }: PostProps) {
+
+	const [posts, setPosts] = useState(postsBlog || []);
+
 	return (
 		<>
 			<Head>
@@ -31,18 +35,23 @@ export default function Posts({ posts }: PostProps) {
 			</Head>
 			<main className={styles.container}>
 				<div className={styles.posts}>
-					<Link href="/">
-						<Image
-							src={thumbImg}
-							alt="Post titulo 1"
-							width={720}
-							height={410}
-							quality={100}
-						/>
-						<strong>Criando meu primeiro aplicativo</strong>
-						<time>14 JANEIRO 2023</time>
-						<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries </p>
-					</Link>
+					{posts.map(post => (
+						<Link key={post.slug} href={`/posts/${post.slug}`}>
+							<Image
+								src={post.cover}
+								alt={post.title}
+								width={720}
+								height={410}
+								quality={100}
+								placeholder="blur"
+								blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOUcN36HwADogITNAmUSQAAAABJRU5ErkJggg=="
+							/>
+							<strong>{post.title}</strong>
+							<time>{post.updateAt}</time>
+							<p>{post.description}</p>
+						</Link>
+					))}
+
 
 					<div className={styles.buttonNavigate}>
 						<div>
